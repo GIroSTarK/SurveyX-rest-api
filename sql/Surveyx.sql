@@ -106,23 +106,23 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `SurveyX`.`Respondent`
+-- Table `SurveyX`.`UserAnswer`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `SurveyX`.`Respondent` ;
+DROP TABLE IF EXISTS `SurveyX`.`UserAnswer` ;
 
-CREATE TABLE IF NOT EXISTS `SurveyX`.`Respondent` (
+CREATE TABLE IF NOT EXISTS `SurveyX`.`UserAnswer` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `User_id` INT NOT NULL,
   `Answer_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Respondent_User1_idx` (`User_id` ASC) VISIBLE,
-  INDEX `fk_Respondent_Answer1_idx` (`Answer_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Respondent_User1`
+  INDEX `fk_UserAnswer_User1_idx` (`User_id` ASC) VISIBLE,
+  INDEX `fk_UserAnswer_Answer1_idx` (`Answer_id` ASC) VISIBLE,
+  CONSTRAINT `fk_UserAnswer_User1`
     FOREIGN KEY (`User_id`)
     REFERENCES `SurveyX`.`User` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Respondent_Answer1`
+  CONSTRAINT `fk_UserAnswer_Answer1`
     FOREIGN KEY (`Answer_id`)
     REFERENCES `SurveyX`.`Answer` (`id`)
     ON DELETE CASCADE

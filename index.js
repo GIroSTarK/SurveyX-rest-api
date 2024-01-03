@@ -7,7 +7,7 @@ const { questionRouter } = require('./routes/questionRoutes');
 const { roleRouter } = require('./routes/roleRoutes');
 const { answerRouter } = require('./routes/answerRoutes');
 const { optionRouter } = require('./routes/optionRoutes');
-const { respondentRouter } = require('./routes/respondentRoutes');
+const { userAnswerRouter } = require('./routes/userAnswerRoutes');
 const { selectedRouter } = require('./routes/selectedRoutes');
 const app = express();
 
@@ -19,12 +19,12 @@ app.use('/questions', questionRouter);
 app.use('/roles', roleRouter);
 app.use('/answers', answerRouter);
 app.use('/options', optionRouter);
-app.use('/respondents', respondentRouter);
+app.use('/user-answers', userAnswerRouter);
 app.use('/selected-options', selectedRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Server started at port ${PORT}`);
-})
+});
 
 const closeServer = async () => {
   console.log('\nStarting the process of closing the app...');

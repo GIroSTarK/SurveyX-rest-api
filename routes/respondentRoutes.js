@@ -1,13 +1,13 @@
 const express = require('express');
 const {
-  getAllRespondents,
-  getRespondentById,
-  addRespondent
-} = require('../controllers/respondentController');
-const respondentRouter = new express.Router();
+  getAllUserAnswers,
+  getUserAnswerById,
+  addUserAnswer,
+} = require('../controllers/userAnswerController');
+const userAnswerRouter = new express.Router();
 
-respondentRouter.get('/', getAllRespondents);
-respondentRouter.get('/:id', getRespondentById);
-respondentRouter.post('/', addRespondent);
+userAnswerRouter.get('/', getAllUserAnswers);
+userAnswerRouter.get('/:id', getUserAnswerById);
+userAnswerRouter.post('/', addUserAnswer);
 
-module.exports = { respondentRouter };
+module.exports = { userAnswerRouter };

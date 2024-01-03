@@ -1,12 +1,12 @@
 const { pool } = require('../database');
 
-class Respondent {
+class UserAnswer {
   static async getAll() {
     const sql = `
     SELECT *
     FROM user
-    INNER JOIN respondent
-    ON respondent.User_id = user.id;
+    INNER JOIN useranswer
+    ON useranswer.User_id = user.id;
     `;
 
     try {
@@ -23,9 +23,9 @@ class Respondent {
     const sql = `
     SELECT *
     FROM user
-    INNER JOIN respondent
-    ON respondent.User_id = user.id
-    WHERE respondent.id = ?;
+    INNER JOIN useranswer
+    ON useranswer.User_id = user.id
+    WHERE useranswer.id = ?;
     `;
 
     try {
@@ -40,20 +40,23 @@ class Respondent {
 
   static async add({ User_id, Answer_id }) {
     const sql = `
-    INSERT INTO respondent(User_id, Answer_id)
+    INSERT INTO useranswer(User_id, Answer_id)
     VALUES(?, ?)
     `;
 
     try {
       const connection = await pool.getConnection();
-      const creationReport = await connection.execute(sql, [User_id, Answer_id]);
-      const addedRespondentId = creationReport[0].insertId;
+      const creationReport = await connection.execute(sql, [
+        User_id,
+        Answer_id,
+      ]);
+      const addedUserAnswerId = creationReport[0].insertId;
       connection.release();
-      return await Respondent.getById(addedRespondentId);
+      return await UserAnswer.getById(addedUserAnswerId);
     } catch (err) {
       throw new Error(err);
     }
   }
 }
 
-module.exports = Respondent;
+module.exports = UserAnswer;

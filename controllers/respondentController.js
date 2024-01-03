@@ -1,12 +1,12 @@
-const Respondent = require('../models/Respondent');
+const UserAnswer = require('../models/UserAnswer');
 const { handleRequest } = require('./requestHandler');
 
-const getAllRespondents = handleRequest(Respondent.getAll);
-const getRespondentById = handleRequest(Respondent.getById);
-const addRespondent = handleRequest(Respondent.add);
+const getAllUserAnswers = handleRequest(UserAnswer.getAll);
+const getUserAnswerById = handleRequest(UserAnswer.getById);
+const addUserAnswer = handleRequest(UserAnswer.add);
 
 module.exports = {
-  getAllRespondents,
-  getRespondentById,
-  addRespondent,
+  getAllUserAnswers,
+  getUserAnswerById,
+  addUserAnswer,
 };
