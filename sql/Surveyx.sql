@@ -156,8 +156,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `SurveyX`.`SelectedOption` ;
 
 CREATE TABLE IF NOT EXISTS `SurveyX`.`SelectedOption` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `Answer_id` INT NOT NULL,
   `Option_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
   INDEX `fk_SelectedOption_Answer1_idx` (`Answer_id` ASC) VISIBLE,
   INDEX `fk_SelectedOption_Option1_idx` (`Option_id` ASC) VISIBLE,
   CONSTRAINT `fk_SelectedOption_Answer1`

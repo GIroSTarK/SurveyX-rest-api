@@ -1,41 +1,17 @@
 const { pool } = require('../database');
+const Entity = require('./Entity');
 
 class UserAnswer {
   static async getAll() {
-    const sql = `
-    SELECT *
-    FROM user
-    INNER JOIN useranswer
-    ON useranswer.User_id = user.id;
-    `;
-
-    try {
-      const connection = await pool.getConnection();
-      const [entityRecord] = await connection.execute(sql);
-      connection.release();
-      return entityRecord;
-    } catch (err) {
-      throw new Error(err);
-    }
+    return await Entity.getAll('useranswer');
   }
 
   static async getById(id) {
-    const sql = `
-    SELECT *
-    FROM user
-    INNER JOIN useranswer
-    ON useranswer.User_id = user.id
-    WHERE useranswer.id = ?;
-    `;
+    return await Entity.getById('useranswer', id);
+  }
 
-    try {
-      const connection = await pool.getConnection();
-      const [entityRecord] = await connection.execute(sql, [id]);
-      connection.release();
-      return entityRecord;
-    } catch (err) {
-      throw new Error(err);
-    }
+  static async deleteById(id) {
+    return await Entity.deleteById('useranswer', id);
   }
 
   static async add({ User_id, Answer_id }) {
