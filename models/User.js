@@ -1,5 +1,6 @@
 const { pool } = require('../database');
 const Entity = require('./Entity');
+const FileService = require('./FileService');
 
 class User {
   static async getAll() {
@@ -11,7 +12,16 @@ class User {
   }
 
   static async deleteById(id) {
-    return await Entity.deleteById('user', id);
+    try {
+      const user = await User.getById(id);
+      if (user.length !== 0 && user[0].picture) {
+        const pictureName = user[0].picture;
+        FileService.deleteFile(pictureName, 'userPictures');
+      }
+      return await Entity.deleteById('user', id);
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   static async getWithTheSameRole(roleId) {
@@ -50,15 +60,10 @@ class User {
     }
   }
 
-  static async create({
-    name,
-    surname,
-    nickname,
-    password,
-    email,
-    picture = null,
-    Role_id = 1,
-  }) {
+  static async create(
+    picture,
+    { name, surname, nickname, password, email, Role_id = 1 }
+  ) {
     const sql = `
     INSERT INTO user(
       password,
@@ -73,6 +78,9 @@ class User {
     `;
 
     try {
+      const pictureName = picture
+        ? FileService.saveFile(picture, 'userPictures')
+        : null;
       const connection = await pool.getConnection();
       const creationReport = await connection.execute(sql, [
         password,
@@ -80,7 +88,7 @@ class User {
         surname,
         nickname.toLowerCase(),
         email,
-        picture,
+        pictureName,
         Role_id,
       ]);
       const addedUserId = creationReport[0].insertId;
@@ -93,7 +101,8 @@ class User {
 
   static async updateById(
     id,
-    { name, surname, nickname, password, email, picture = null }
+    picture,
+    { name, surname, nickname, password, email }
   ) {
     const sql = `
     UPDATE user
@@ -108,14 +117,26 @@ class User {
     `;
 
     try {
+      let newPictureName;
       const connection = await pool.getConnection();
+      if (picture) {
+        const user = await User.getById(id);
+        const previousPictureName = user[0].picture;
+        newPictureName = FileService.updateFile(
+          previousPictureName,
+          'userPictures',
+          picture
+        );
+      } else {
+        newPictureName = null;
+      }
       await connection.execute(sql, [
         password,
         name,
         surname,
         nickname,
         email,
-        picture,
+        newPictureName,
         id,
       ]);
       connection.release();

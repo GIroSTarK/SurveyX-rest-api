@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const { pool } = require('./database');
 const { userRouter } = require('./routes/userRoutes');
 const { quizRouter } = require('./routes/quizRoutes');
@@ -13,6 +14,9 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
+app.use(express.static('userPictures'));
+app.use(express.static('userFiles'));
+app.use(fileUpload({}));
 app.use('/users', userRouter);
 app.use('/quizzes', quizRouter);
 app.use('/questions', questionRouter);

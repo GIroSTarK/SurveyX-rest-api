@@ -1,5 +1,6 @@
 const { pool } = require('../database');
 const Entity = require('./Entity');
+const FileService = require('./FileService');
 
 class Answer {
   static async getAll() {
@@ -11,7 +12,16 @@ class Answer {
   }
 
   static async deleteById(id) {
-    return await Entity.deleteById('answer', id);
+    try {
+      const answer = await Answer.getById(id);
+      if (answer.length !== 0 && answer[0].file) {
+        const fileName = answer[0].file;
+        FileService.deleteFile(fileName, 'userFiles');
+      }
+      return await Entity.deleteById('answer', id);
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   static async getByQuestionId(id) {
@@ -33,7 +43,7 @@ class Answer {
     }
   }
 
-  static async add({ text = null, option = null, file = null, Question_id }) {
+  static async add(file, { text = null, option = null, Question_id }) {
     const sql = `
     INSERT INTO answer
     (text, \`option\`, file, Question_id)
@@ -41,11 +51,14 @@ class Answer {
     `;
 
     try {
+      const fileName = file
+        ? FileService.saveFile(file, 'userFiles')
+        : null;
       const connection = await pool.getConnection();
       const creationReport = await connection.execute(sql, [
         text,
         option,
-        file,
+        fileName,
         Question_id,
       ]);
       const addedAnswerId = creationReport[0].insertId;
@@ -58,7 +71,8 @@ class Answer {
 
   static async updateById(
     id,
-    { text = null, option = null, file = null, Question_id }
+    file,
+    { text = null, option = null, Question_id }
   ) {
     const sql = `
     UPDATE answer
@@ -71,8 +85,20 @@ class Answer {
     `;
 
     try {
+      let newFileName;
       const connection = await pool.getConnection();
-      await connection.execute(sql, [ text, option, file, Question_id, id]);
+      if (file) {
+        const answer = await Answer.getById(id);
+        const previousFileName = answer[0].file;
+        newFileName = FileService.updateFile(
+          previousFileName,
+          'userFiles',
+          file
+        );
+      } else {
+        newFileName = null;
+      }
+      await connection.execute(sql, [text, option, newFileName, Question_id, id]);
       connection.release();
       return await Answer.getById(id);
     } catch (err) {

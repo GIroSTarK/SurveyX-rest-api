@@ -4,10 +4,15 @@ const handleRequest = (callback) => {
     try {
       if (req.params.id) {
         args.push(req.params.id);
-      } 
+      }
       if (req.params.nickname) {
         args.push(req.params.nickname.toLowerCase());
-      } 
+      }
+      if (req.files) {
+        req.files.picture
+          ? args.push(req.files.picture)
+          : args.push(req.files.file);
+      }
       if (req.body) {
         args.push(req.body);
       }
